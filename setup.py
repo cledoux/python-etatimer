@@ -2,7 +2,7 @@
 # Copyright (c) 2015 University of Louisiana at Lafayette.
 # All rights reserved.
 import os
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 # Utility function to read the README file.
@@ -14,7 +14,7 @@ def read(fname):
 
 setup(
     name="etatimer",
-    version="0.0.1",
+    version="0.0.2",
     author="Charles LeDoux",
     author_email="charles.a.ledoux@gmail.com",
     description=("Copyright (c) Charles LeDoux"
