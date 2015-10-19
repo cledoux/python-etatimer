@@ -29,5 +29,5 @@ setup(
     ],
     license="MIT",
     install_requires=['progressbar2>=3.3.0'],
-    packages=['etatimer'],
+    py_modules=["etatimer"],
 )

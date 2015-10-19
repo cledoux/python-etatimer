@@ -1,7 +1,22 @@
-Wrapper around 
-(python-progressbar)[https://github.com/WoLpH/python-progressbar] to provide a 
-dead simple eta timer. Basically, wraps progressbar with my personally 
-preferred defaults and manner of usage.
+This is meant to be a super simple drop in for tracking progress.
+
+This is, in essence, a wrapper around [progressbar2][1] with my personally 
+preferred defaults and ways of doing things.
+
+If you need anything even slightly more complicated than what EtaTimer 
+provides, I recommend looking at the progressbar2 module instead.
+
+[1]: https://github.com/WoLpH/python-progressbar
+
+# Quickstart
+    from etatimer import EtaTimer
+    import time
+
+    x = range(5)
+    t = Timer(len(x))
+    for i in x:
+        t.tick()
+        time.sleep(1)
 
 # Classes
 
