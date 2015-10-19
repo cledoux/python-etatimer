@@ -45,3 +45,6 @@ Prints final statistics.
 ## timer.finished
 
 Boolean indicating if time is finished.
+=======
+# python-etatimer
+Simple wrapper around progressbar2 to provide an ETA Timer
