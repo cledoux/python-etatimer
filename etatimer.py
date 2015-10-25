@@ -3,7 +3,7 @@ from __future__ import division, absolute_import, with_statement
 # All rights reserved.
 
 import sys
-import time
+import logging
 
 from progressbar import ProgressBar, ETA, AdaptiveETA, Percentage, SimpleProgress, Timer
 
@@ -27,22 +27,35 @@ class EtaTimer(object):
         """
         self.name = name
         self.eta_window = 0
-        self.currval = 0
         self.total = total
         self.pbar = ProgressBar(max_value=total, widgets=self._default_widgets(), fd=stream)
+        # Ensure starts at 0
+        self.pbar.update(0)
 
     @property
     def finished(self):
-        return self.currval >= self.total
+        return self.pbar.finished
+
+    @property
+    def currval(self):
+        return self.pbar.value
+
+    @property
+    def max_value(self):
+        return self.pbar.max_value
 
     def tick(self, *args):
         """ Finished an item.
         The *args is so this can be used as an arbitrary callback
         """
-        self.pbar.update(self.currval)
-        self.currval += 1
-        if self.finished:
-            self.ding()
+        log = logging.getLogger(__name__)
+        try:
+            self.pbar.update(self.currval + 1)
+        except ValueError:
+            # Update value was too large. I don't ever want to generate an
+            # error, so simply ignore it.
+            log.debug("ProgressBar update called with value larger than max of %d", self.max_value)
+            self.pbar.update(self.currval)
 
     def ding(self):
         """ Time's up. Ding! """
