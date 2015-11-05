@@ -3,6 +3,7 @@ from __future__ import division, absolute_import, with_statement
 # All rights reserved.
 
 import sys
+import time
 import logging
 
 from progressbar import ProgressBar, ETA, AdaptiveETA, Percentage, SimpleProgress, Timer
@@ -19,26 +20,47 @@ class EtaTimer(object):
     called and final statistics are reported. The timer can manually be stopped
     by a call to ding() as well.
     """
-    def __init__(self, total, name="", stream=sys.stderr):
+    def __init__(self, total, name="", stream=sys.stderr, poll_period=1, eta_window=0):
         """
-        Arguments:
-            total:  Total number of items that will need processing.
-            stream:     File descriptor to write to
+        Args:
+            total (int): Total number of items that will need processing.
+            stream (File like): File descriptor to write to
+            poll_period (int): Minimum number of seconds between updates.
+            eta_window (int): Number of elements to use in the sliding window that determines ETA.
+                Set to 0 to use naive time estimation (default).
         """
         self.name = name
-        self.eta_window = 0
+        self.eta_window = eta_window
         self.total = total
+        self.poll_period = poll_period
         self.pbar = ProgressBar(max_value=total, widgets=self._default_widgets(), fd=stream)
+        self.currval = 0
         # Ensure starts at 0
-        self.pbar.update(0)
+        self.pbar.update(self.currval)
+        self.next_update = time.time() + self.poll_period
+
+    @classmethod
+    def from_file(cls, infile):
+        """ Create an EtaTimer from a file object.
+        If any error during timer creation, will simply return a DummyTimer.
+        Args:
+            infile (File): Must be seekable
+        """
+        timer = DummyTimer()
+        try:
+            infile.seek(0, 0)
+        except Exception:
+            log = logging.getLogger(__name__)
+            log.error("Unseekable File, not using timer")
+        else:
+            total = sum(1 for _ in infile)
+            infile.seek(0, 0)
+            timer = EtaTimer(total, sys.stderr)
+        return timer
 
     @property
     def finished(self):
         return self.pbar.finished
-
-    @property
-    def currval(self):
-        return self.pbar.value
 
     @property
     def max_value(self):
@@ -50,7 +72,10 @@ class EtaTimer(object):
         """
         log = logging.getLogger(__name__)
         try:
-            self.pbar.update(self.currval + 1)
+            self.currval += 1
+            if time.time() >= self.next_update:
+                self.pbar.update(self.currval)
+                self.next_update = time.time() + self.poll_period
         except ValueError:
             # Update value was too large. I don't ever want to generate an
             # error, so simply ignore it.

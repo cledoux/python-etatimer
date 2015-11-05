@@ -14,7 +14,7 @@ def read(fname):
 
 setup(
     name="etatimer",
-    version="0.0.3",
+    version="0.0.5",
     author="Charles LeDoux",
     author_email="charles.a.ledoux@gmail.com",
     description=("Copyright (c) Charles LeDoux"
