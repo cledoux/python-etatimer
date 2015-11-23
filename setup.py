@@ -14,9 +14,10 @@ def read(fname):
 
 setup(
     name="etatimer",
-    version="0.0.5",
+    version="1.0.0",
     author="Charles LeDoux",
     author_email="charles.a.ledoux@gmail.com",
+    url="https://github.com/cledoux/python-etatimer",
     description=("Copyright (c) Charles LeDoux"
                  "All rights reserved."),
     long_description=read('README.md'),
@@ -28,6 +29,6 @@ setup(
         "Operating System :: POSIX :: Linux",
     ],
     license="MIT",
-    install_requires=['progressbar2>=3.3.0'],
+    install_requires=['progressbar2>=3.5.0'],
     py_modules=["etatimer"],
 )
