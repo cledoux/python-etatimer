@@ -1,6 +1,9 @@
+"""
+Copyright (c) 2015 Charles LeDoux.
+All rights reserved.
+"""
+
 from __future__ import division, absolute_import, with_statement
-# Copyright (c) 2015 University of Louisiana at Lafayette.
-# All rights reserved.
 
 import sys
 import time
